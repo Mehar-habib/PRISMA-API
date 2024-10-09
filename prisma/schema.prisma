@@ -21,3 +21,41 @@ model Customer {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model User {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  email     String    @unique
+  username  String    @unique
+  password  String
+  firstName String
+  lastName  String
+  phone     String    @unique
+  dob       DateTime?
+  gender    Gender
+  image     String?
+  role      Role      @default(ATTENDENT)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  shops     Shop[] //relation to shops managed by the user
+}
+
+model Shop {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  location     String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  adminId      String   @db.ObjectId // foregin key to the User model
+  admin        User     @relation(fields: [adminId], references: [id]) //relation to the admin who manages the shop
+  attendantIds String[] @db.ObjectId //Array of objectIds referencing attendants
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum Role {
+  ADMIN
+  ATTENDENT
+}
